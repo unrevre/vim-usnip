@@ -10,7 +10,7 @@ func! usnip#should_trigger() abort
     let l:cword = matchstr(getline('.'), '\v\f+%' . col('.') . 'c')
 
     let l:dirs = join(s:directories(), ',')
-    let l:all = globpath(l:dirs, l:cword.'.snip', 0, 1)
+    let l:all = globpath(l:dirs, l:cword, 0, 1)
     call filter(l:all, {_, path -> filereadable(path)})
 
     if len(l:all) > 0
@@ -21,7 +21,7 @@ func! usnip#should_trigger() abort
     return search(s:delimpat, 'e')
 endfunc
 
-" main func, called on press of Tab (or whatever key Minisnip is bound to)
+" main func, called on press of Tab (or whatever key usnip is bound to)
 func! usnip#expand() abort
     if exists('s:snippetfile')
         " reset placeholder text history (for backrefs)
@@ -141,7 +141,7 @@ func! usnip#complete(findstart, base) abort
 
     " Load all snippets that match.
     let l:dirs = join(s:directories(), ',')
-    let l:all = globpath(l:dirs, a:base.'*.snip', 0, 1)
+    let l:all = globpath(l:dirs, a:base, 0, 1)
     call filter(l:all, {_, path -> filereadable(path)})
     call map(l:all, funcref('s:build_comp'))
     call sort(l:all, {a,b-> a.abbr ==? b.abbr ? 0 : a.abbr > b.abbr ? 1 : -1})

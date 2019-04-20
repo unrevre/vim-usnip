@@ -32,12 +32,22 @@ func! usnip#expand() abort
         " adjust the indentation, use the current line as reference
         let l:ws = matchstr(getline(line('.')), '^\s\+')
         let l:lns = map(readfile(s:snippetfile), 'empty(v:val)? v:val : l:ws.v:val')
+        " delete line after snippet token
+        let l:old_s = @s
+        normal! "sD
         " insert the snippet
         call append(line('.'), l:lns)
         " join the snippet at the current position
         join
         " select the first placeholder
         call s:select_placeholder()
+        " save cursor position and restore line after snippet
+        let l:cpos = col('.')
+        if getreg('s') !=# ' '
+            normal! "sp
+        endif
+        call cursor(line('.'), l:cpos)
+        let @s = l:old_s
     else
         " Make sure '< mark is set so the normal command won't error out.
         if getpos("'<") == [0, 0, 0, 0]

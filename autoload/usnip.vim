@@ -7,7 +7,7 @@ let s:delimpat = '\V' . s:startdelim . '\.\{-}' . s:enddelim
 
 func! usnip#should_trigger() abort
     silent! unlet! s:snippetfile
-    let l:cword = matchstr(getline('.'), '\v\f+%' . col('.') . 'c')
+    let l:cword = matchstr(getline('.'), '\v\f+%' . col('.') . 'c>')
 
     let l:dirs = join(s:directories(), ',')
     let l:all = globpath(l:dirs, l:cword, 0, 1)

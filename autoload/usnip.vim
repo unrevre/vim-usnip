@@ -101,10 +101,10 @@ func! s:select_placeholder() abort
 
     if empty(@s)
         " the placeholder was empty, so just enter insert mode directly
-        normal! gvd
-        if col("'>") - l:slen >= col('$') - 1
-            norm! $
-        endif
+        keeppatterns execute 'normal! /\V' . s:startdelim . '<cr>'
+        let l:cpos = col('.')
+        keeppatterns execute ':s/\V' . s:startdelim . '\.\{-}' . s:enddelim. '//'
+        call cursor(line('.'), l:cpos)
     else
         " paste the placeholder's default value in and enter select mode on it
         execute "normal! gv\"spgv\<C-g>"

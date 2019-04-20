@@ -34,8 +34,8 @@ func! usnip#expand() abort
         let l:lns = map(readfile(s:snippetfile), 'empty(v:val)? v:val : l:ws.v:val')
         " insert the snippet
         call append(line('.'), l:lns)
-        " remove the empty line before the snippet
-        normal! "_dd
+        " join the snippet at the current position
+        join
         " select the first placeholder
         call s:select_placeholder()
     else

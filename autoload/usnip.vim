@@ -35,19 +35,17 @@ func! usnip#expand() abort
         " delete line after snippet token
         let l:old_s = @s
         normal! "sD
+        " join saved line to last line of snippet
+        if getreg('s') !=# ' '
+            let l:lns[-1] = l:lns[-1] . getreg('s')
+        endif
+        let @s = l:old_s
         " insert the snippet
         call append(line('.'), l:lns)
         " join the snippet at the current position
         join
         " select the first placeholder
         call s:select_placeholder()
-        " save cursor position and restore line after snippet
-        let l:cpos = col('.')
-        if getreg('s') !=# ' '
-            normal! "sp
-        endif
-        call cursor(line('.'), l:cpos)
-        let @s = l:old_s
     else
         " Make sure '< mark is set so the normal command won't error out.
         if getpos("'<") == [0, 0, 0, 0]

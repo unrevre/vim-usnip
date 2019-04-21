@@ -36,6 +36,8 @@ func! usnip#expand() abort
         let l:lns = map(readfile(s:snippetfile), 'empty(v:val)? v:val : l:ws.v:val')
         " delete line after snippet token
         let l:old_s = @s
+        " clear register to avoid leaking original contents when at end-of-line
+        call setreg('s', [])
         normal! "sD
         " join saved line to last line of snippet
         if getreg('s') !=# ' '

@@ -1,9 +1,9 @@
-let s:startdelim = get(g:, 'usnip_startdelim', '{{+')
-let s:enddelim = get(g:, 'usnip_enddelim', '+}}')
+let s:nsdelim = get(g:, 'usnip_nsdelim', '{{+')
+let s:nedelim = get(g:, 'usnip_nedelim', '+}}')
 let s:evalmarker = get(g:, 'usnip_evalmarker', '~')
 let s:backrefmarker = get(g:, 'usnip_backrefmarker', '\\~')
 
-let s:delimpat = '\V' . s:startdelim . '\.\{-}' . s:enddelim
+let s:ndelim = '\V' . s:nsdelim . '\(\.\{-}\)' . s:nedelim
 
 func! usnip#should_trigger() abort
     silent! unlet! s:snippetfile
@@ -18,7 +18,7 @@ func! usnip#should_trigger() abort
         return 1
     endif
 
-    return search(s:delimpat, 'e')
+    return search(s:ndelim, 'e')
 endfunc
 
 " main func, called on press of Tab (or whatever key usnip is bound to)
@@ -79,7 +79,7 @@ func! s:select_placeholder() abort
     try
         " gn misbehaves when 'wrapscan' isn't set (see vim's #1683)
         let [l:ws, &ws] = [&ws, 1]
-        silent keeppatterns execute 'normal! /' . s:delimpat . "/e\<cr>gn\"sy"
+        silent keeppatterns execute 'normal! /' . s:ndelim . "/e\<cr>gn\"sy"
     catch /E486:/
         " There's no placeholder at all
         return
@@ -94,8 +94,7 @@ func! s:select_placeholder() abort
     let l:slen = len(@s)
 
     " remove the start and end delimiters
-    let @s=substitute(@s, '\V' . s:startdelim, '', '')
-    let @s=substitute(@s, '\V' . s:enddelim, '', '')
+    let @s=substitute(@s, '\V' . s:ndelim, '\1', '')
 
     " is this placeholder marked as 'evaluate'?
     if @s =~ '\V\^' . s:evalmarker
@@ -113,9 +112,9 @@ func! s:select_placeholder() abort
 
     if empty(@s)
         " the placeholder was empty, so just enter insert mode directly
-        keeppatterns execute 'normal! /\V' . s:startdelim . '<cr>'
+        keeppatterns execute 'normal! /\V' . s:ndelim . '<cr>'
         let l:cpos = col('.')
-        keeppatterns execute ':s/\V' . s:startdelim . '\.\{-}' . s:enddelim. '//'
+        keeppatterns execute ':s/\V' . s:ndelim . '//'
         call cursor(line('.'), l:cpos)
     else
         " paste the placeholder's default value in and enter select mode on it
@@ -131,7 +130,7 @@ func! usnip#done(item) abort
         return
     endif
 
-    if match(a:item.word, s:delimpat) != -1
+    if match(a:item.word, s:ndelim) != -1
         let s:placeholder_texts = []
         let s:placeholder_text = ''
 

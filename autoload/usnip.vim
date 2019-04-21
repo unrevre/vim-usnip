@@ -1,9 +1,12 @@
 let s:nsdelim = get(g:, 'usnip_nsdelim', '{{+')
 let s:nedelim = get(g:, 'usnip_nedelim', '+}}')
+let s:fsdelim = get(g:, 'usnip_fsdelim', '{{-')
+let s:fedelim = get(g:, 'usnip_fedelim', '-}}')
 let s:evalmarker = get(g:, 'usnip_evalmarker', '~')
 let s:backrefmarker = get(g:, 'usnip_backrefmarker', '\\~')
 
 let s:ndelim = '\V' . s:nsdelim . '\(\.\{-}\)' . s:nedelim
+let s:fdelim = '\V' . s:fsdelim . '\(\.\{-}\)' . s:fedelim
 
 func! usnip#should_trigger() abort
     silent! unlet! s:snippetfile
@@ -18,7 +21,7 @@ func! usnip#should_trigger() abort
         return 1
     endif
 
-    return search(s:ndelim, 'e')
+    return search(s:ndelim . '\|' . s:fdelim, 'e')
 endfunc
 
 " main func, called on press of Tab (or whatever key usnip is bound to)
@@ -80,9 +83,12 @@ func! s:select_placeholder() abort
         " gn misbehaves when 'wrapscan' isn't set (see vim's #1683)
         let [l:ws, &ws] = [&ws, 1]
         silent keeppatterns execute 'normal! /' . s:ndelim . "/e\<cr>gn\"sy"
+        let l:delim = s:ndelim
     catch /E486:/
-        " There's no placeholder at all
-        return
+        " there's no normal placeholder
+        " usnip#should_trigger() removes need for try-catch
+        silent keeppatterns execute 'normal! /' . s:fdelim . "/e\<cr>gn\"sy"
+        let l:delim = s:fdelim
     finally
         let &ws = l:ws
     endtry
@@ -94,7 +100,7 @@ func! s:select_placeholder() abort
     let l:slen = len(@s)
 
     " remove the start and end delimiters
-    let @s=substitute(@s, '\V' . s:ndelim, '\1', '')
+    let @s=substitute(@s, '\V' . l:delim, '\1', '')
 
     " is this placeholder marked as 'evaluate'?
     if @s =~ '\V\^' . s:evalmarker
@@ -112,9 +118,9 @@ func! s:select_placeholder() abort
 
     if empty(@s)
         " the placeholder was empty, so just enter insert mode directly
-        keeppatterns execute 'normal! /\V' . s:ndelim . '<cr>'
+        keeppatterns execute 'normal! /\V' . l:delim . '<cr>'
         let l:cpos = col('.')
-        keeppatterns execute ':s/\V' . s:ndelim . '//'
+        keeppatterns execute ':s/\V' . l:delim . '//'
         call cursor(line('.'), l:cpos)
     else
         " paste the placeholder's default value in and enter select mode on it

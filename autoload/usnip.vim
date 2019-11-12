@@ -33,7 +33,7 @@ func! usnip#expand() abort
         " move to end of snippet token
         call search('\V\w\>', 'bce', line('.'))
         " remove snippet token
-        normal! "_diw
+        normal! "_diW
         " adjust the indentation, use the current line as reference
         let l:ws = matchstr(getline(line('.')), '^\s\+')
         let l:lns = map(readfile(s:snippetfile), 'empty(v:val)? v:val : l:ws.v:val')

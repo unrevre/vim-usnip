@@ -32,18 +32,20 @@ func! usnip#expand() abort
         let s:placeholder_text = ''
         " move to start of snippet token
         call searchpos('\M' . s:token . '\>', 'bc', line('.'))
+        " check character before token
+        let l:bc = col('.') > 1 ? getline('.')[col('.') - 2] : ' '
         " remove snippet token (allows one non-word-character prefix)
         normal! "_de
-        " check character before token
-        let l:bc = getline('.')[col('.') - 1]
         " adjust the indentation, use the current line as reference
         let l:ws = matchstr(getline(line('.')), '^\s\+')
         let l:lns = map(readfile(s:snippetfile), 'empty(v:val)? v:val : l:ws.v:val')
-        " delete line after snippet token
-        let l:old_s = @s
         " clear register to avoid leaking original contents when at end-of-line
+        let l:old_s = @s
         call setreg('s', [])
-        normal! "sD
+        " delete line after snippet token
+        if strlen(getline('.')) != col('.')
+            normal! "sD
+        endif
         " join saved line to last line of snippet
         if getreg('s') !=# ' '
             let l:lns[-1] = l:lns[-1] . getreg('s')

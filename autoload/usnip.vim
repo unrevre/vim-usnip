@@ -10,10 +10,10 @@ let s:fdelim = '\V' . s:fsdelim . '\(\.\{-}\)' . s:fedelim
 
 func! usnip#should_trigger() abort
     silent! unlet! s:snippetfile
-    let l:cword = matchstr(getline('.'), '\v\f+%' . col('.') . 'c>')
+    let s:token = matchstr(getline('.'), '\v\f+%' . col('.') . 'c>')
 
     let l:dirs = join(s:directories(), ',')
-    let l:all = globpath(l:dirs, l:cword, 0, 1)
+    let l:all = globpath(l:dirs, s:token, 0, 1)
     call filter(l:all, {_, path -> filereadable(path)})
 
     if len(l:all) > 0
@@ -30,10 +30,12 @@ func! usnip#expand() abort
         " reset placeholder text history (for backrefs)
         let s:placeholder_texts = []
         let s:placeholder_text = ''
-        " move to end of snippet token
-        call search('\V\w\>', 'bce', line('.'))
-        " remove snippet token
-        normal! "_diW
+        " move to start of snippet token
+        call searchpos('\M' . s:token . '\>', 'bc', line('.'))
+        " remove snippet token (allows one non-word-character prefix)
+        normal! "_de
+        " check character before token
+        let l:bc = getline('.')[col('.') - 1]
         " adjust the indentation, use the current line as reference
         let l:ws = matchstr(getline(line('.')), '^\s\+')
         let l:lns = map(readfile(s:snippetfile), 'empty(v:val)? v:val : l:ws.v:val')
@@ -50,7 +52,11 @@ func! usnip#expand() abort
         " insert the snippet
         call append(line('.'), l:lns)
         " join the snippet at the current position
-        join
+        normal! J
+        " delete extraneous whitespace
+        if l:bc != ' '
+            normal! x
+        endif
         " select the first placeholder
         call s:select_placeholder()
     else

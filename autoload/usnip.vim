@@ -109,9 +109,6 @@ func! s:select_placeholder() abort
     " save the contents of the previous placeholder (for backrefs)
     call add(s:placeholder_texts, s:placeholder_text)
 
-    " save length of entire placeholder for reference later
-    let l:slen = len(@s)
-
     " remove the start and end delimiters
     let @s=substitute(@s, '\V' . l:delim, '\1', '')
 

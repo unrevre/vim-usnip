@@ -9,9 +9,9 @@ endif
 let g:loaded_usnip = 1
 
 inoremap <expr> <silent> <Plug>(usnip-next) usnip#should_trigger() ?
-            \"x\<bs>\<c-o>:call usnip#expand()\<cr>" : "\<tab>"
+            \"x\<bs>\<c-o>:call usnip#expand('h')\<cr>" : "\<tab>"
 snoremap <expr> <silent> <Plug>(usnip-next) usnip#should_trigger() ?
-            \"\<esc>:call usnip#expand()\<cr>" : "\<tab>"
+            \"\<esc>:call usnip#expand('')\<cr>" : "\<tab>"
 
 " add the default mappings if the user hasn't defined any
 if !hasmapto('<Plug>(usnip-next)')

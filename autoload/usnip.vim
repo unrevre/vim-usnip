@@ -56,7 +56,7 @@ func! usnip#expand(adjust) abort
         " join the snippet at the current position
         normal! J
         " delete extraneous whitespace
-        if l:bc != ' '
+        if l:bc !=# ' '
             normal! x
         endif
         " select the first placeholder
@@ -110,20 +110,20 @@ func! s:select_placeholder() abort
     call add(s:placeholder_texts, s:placeholder_text)
 
     " remove the start and end delimiters
-    let @s=substitute(@s, '\V' . l:delim, '\1', '')
+    let @s = substitute(@s, '\V' . l:delim, '\1', '')
 
     " is this placeholder marked as 'evaluate'?
     if @s =~ '\V\^' . s:evalmarker
         " remove the marker
-        let @s=substitute(@s, '\V\^' . s:evalmarker, '', '')
+        let @s = substitute(@s, '\V\^' . s:evalmarker, '', '')
         " substitute in any backrefs
-        let @s=substitute(@s, '\V' . s:backrefmarker . '\(\d\)',
+        let @s = substitute(@s, '\V' . s:backrefmarker . '\(\d\)',
             \"\\=\"'\" . substitute(get(
             \    s:placeholder_texts,
             \    len(s:placeholder_texts) - str2nr(submatch(1)), ''
             \), \"'\", \"''\", 'g') . \"'\"", 'g')
         " evaluate what's left
-        let @s=eval(@s)
+        let @s = eval(@s)
     endif
 
     if empty(@s)
@@ -171,7 +171,7 @@ func! usnip#complete(findstart, base) abort
     let l:all = globpath(l:dirs, a:base, 0, 1)
     call filter(l:all, {_, path -> filereadable(path)})
     call map(l:all, funcref('s:build_comp'))
-    call sort(l:all, {a,b-> a.abbr ==? b.abbr ? 0 : a.abbr > b.abbr ? 1 : -1})
+    call sort(l:all, {a, b -> a.abbr ==? b.abbr ? 0 : a.abbr > b.abbr ? 1 : -1})
 
     return l:all
 endfunc

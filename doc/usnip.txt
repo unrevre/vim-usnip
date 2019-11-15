@@ -1,0 +1,112 @@
+*usnip* *usnip.txt* minimal snippet manager
+
+vim-usnip
+
+1. Overview                     |usnip-overview|
+2. Mappings                     |usnip-mappings|
+3. Configuration                |usnip-configuration|
+4. Idiosyncracies               |usnip-idiosyncracies|
+
+===============================================================================
+OVERVIEW                                                       *usnip-overview*
+
+usnip is a minimal, lightweight plugin for expanding keywords into editable
+templates.
+
+Keywords are |filetype|-specific, live in |g:usnip_dirs|, and are to contain
+at least one pair of delimiters, or placeholder. All "normal" placeholders
+(|g:usnip_nsdelim|, |g:usnip_nedelim|) are expanded first, followed by "final"
+placeholders (|g:usnip_fsdelim|, |g:usnip_fedelim|). Expansion order is
+top-to-bottom for both types of placeholders.
+
+Delimiter pairs may sandwich a string, also referred to as the placeholder
+contents, which will be handled as follows: i) any back-references (see
+|g:usnip_backrefmarker|) are substituted ii) the string is evaluated and
+replaced by the result of the evaluation iii) resulting string becomes the
+default expansion of the placeholder. Steps i) and ii) occur if and only if
+the placeholder contents begin with |g:usnip_evalmarker|.
+
+===============================================================================
+MAPPINGS                                                       *usnip-mappings*
+
+                                                           *<Plug>(usnip_next)*
+<Plug>(usnip-next)      In insert or select mode, expand a keyword if
+                        possible, or else jump to the next placeholder.
+                        Defaults to <Tab>.
+
+===============================================================================
+CONFIGURATION                                             *usnip-configuration*
+
+-------------------------------------------------------------------------------
+                                                                 *g:usnip_dirs*
+g:usnip_dirs            |List|          ['~/.vim/snippets/']
+                        |List| of top-level directories where keyword files
+                        (organised into directories with names corresponding
+                        to |filetype|) may be found.
+
+-------------------------------------------------------------------------------
+                                                              *g:usnip_nsdelim*
+g:usnip_nsdelim         |String|        '{{+'
+                        Start delimiter for placeholders. To be paired with an
+                        end delimiter (see |g:usnip_nedelim|) on the same line.
+
+-------------------------------------------------------------------------------
+                                                              *g:usnip_nedelim*
+g:usnip_nedelim         |String|        '+}}'
+                        End delimiter for placeholders.
+
+-------------------------------------------------------------------------------
+                                                              *g:usnip_fsdelim*
+g:usnip_fsdelim         |String|        '{{-'
+                        Start delimiter for final placeholders, which are
+                        expanded after all normal (see |g:usnip_nsdelim|,
+                        |g:usnip_nedlim|) placeholders have been expanded. To
+                        be paired with a corresponding end delimiter (see
+                        |g:usnip_fedelim|). Multiple such delimiter pairs may
+                        exist in a single completion file.
+
+-------------------------------------------------------------------------------
+                                                              *g:usnip_fedelim*
+g:usnip_fedelim         |String|        '{{-'
+                        End delimiter for final placeholders, which are
+                        expanded after all normal (see |g:usnip_nsdelim|,
+                        |g:usnip_nedlim|) placeholders have been expanded.
+                        Multiple such delimiter pairs may exist in a single
+                        completion file.
+
+-------------------------------------------------------------------------------
+                                                           *g:usnip_evalmarker*
+g:usnip_evalmarker      |String|        '~'
+                        Denote that placeholder contents following this marker
+                        should be evaluated, after substituions of any
+                        back-references (see |g:usnip_backrefmarker|), with
+                        the result of the evaluation (see |eval|) set as the
+                        default expansion of the placeholder. Note: any side
+                        effects of the expression will occur and may break
+                        further expansions. Expressions that leave the
+                        placeholder intact and returns the cursor to the
+                        placeholder location should work fine.
+
+-------------------------------------------------------------------------------
+                                                        *g:usnip_backrefmarker*
+g:usnip_backrefmarker   |String|        '\\~'
+                        Denote that this marker, together with the following
+                        single digit n, should be substituted by the contents
+                        of a previously expanded placeholder. The digit n
+                        should be such that the n-th previous expansion (in
+                        order of actual expansion) has the desired content.
+
+===============================================================================
+IDIOSYNCRACIES                                           *usnip-idiosyncracies*
+
+Keywords may be expanded only at |word| (also 'iskeyword') boundaries, and may
+contain any combination of characters. However, correct removal of the entire
+keyword is possible if and only if all characters except the first are |word|
+characters.
+
+Expansion of a placeholder when followed only by a single character may not
+work as expected: manual insertion jumps to the column right after the single
+character (instead of before the character, as the position of the placeholder
+would suggest).
+
+ vim:tw=78:ts=8:ft=help:

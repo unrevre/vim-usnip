@@ -1,6 +1,5 @@
 " Minimal snippeting plugin
-" Last change: 2018-03-16
-" Maintainer: Hauleth <lukasz@niemier.pl>
+" Maintainer: unrevre <unrevre@gmail.com>
 " License: MIT
 
 if exists('g:loaded_usnip')

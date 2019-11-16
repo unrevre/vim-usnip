@@ -39,18 +39,14 @@ func! usnip#expand(adjust) abort
         " adjust the indentation, use the current line as reference
         let l:ws = matchstr(getline(line('.')), '^\s\+')
         let l:lns = map(readfile(s:snippetfile), 'empty(v:val)? v:val : l:ws.v:val')
-        " clear register to avoid leaking original contents when at end-of-line
-        let l:old_s = @s
-        call setreg('s', [])
-        " delete line after snippet token
-        if strlen(getline('.')) != col('.')
+        if strlen(getline('.')) > col('.')
+            let l:old_s = @s
+            " delete line after snippet token
             normal! "sD
-        endif
-        " join saved line to last line of snippet
-        if getreg('s') !=# ' '
+            " join saved line to last line of snippet
             let l:lns[-1] = l:lns[-1] . getreg('s')
+            let @s = l:old_s
         endif
-        let @s = l:old_s
         " insert the snippet
         call append(line('.'), l:lns)
         " join the snippet at the current position

@@ -82,10 +82,8 @@ g:usnip_evalmarker      |String|        '~'
                         back-references (see |g:usnip_backrefmarker|), with
                         the result of the evaluation (see |eval|) set as the
                         default expansion of the placeholder. Note: any side
-                        effects of the expression will occur and may break
-                        further expansions. Expressions that leave the
-                        placeholder intact and returns the cursor to the
-                        placeholder location should work fine.
+                        effects of the expression will occur and may have
+                        unintended consequences (see |usnip-idiosyncracies|).
 
 -------------------------------------------------------------------------------
                                                         *g:usnip_backrefmarker*
@@ -103,6 +101,12 @@ Keywords may be expanded only at |word| (also 'iskeyword') boundaries, and may
 contain any combination of characters. However, correct removal of the entire
 keyword is possible if and only if all characters except the first are |word|
 characters.
+
+During expansion, the cursor will jump to the next occurrence of the active
+delimiter pair. Expressions with side effects that may change the cursor
+position relative to the placeholder (e.g. inserting text after the
+placeholder, inserting another placeholder, etc.) may not work as expected.
+Marks or movement commands may be used to restore desired behaviour.
 
 Expansion of a placeholder when followed only by a single character may not
 work as expected: manual insertion jumps to the column right after the single

@@ -127,11 +127,11 @@ func! s:select_placeholder() abort
     endif
 
     if empty(@s)
-        " the placeholder was empty, so just enter insert mode directly
-        keeppatterns execute 'normal! /\V' . l:delim . '<cr>'
-        let l:cpos = col('.')
+        " jump to next placeholder occurrence (by default at current position)
+        keeppatterns execute 'normal! /\V' . l:delim . "\<cr>"
+        let l:cpos = getcurpos()
         keeppatterns execute ':s/\V' . l:delim . '//'
-        call cursor(line('.'), l:cpos)
+        call setpos('.', l:cpos)
     else
         " paste the placeholder's default value in and enter select mode on it
         execute "normal! gv\"spgv\<C-g>"

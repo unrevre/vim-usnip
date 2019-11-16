@@ -124,7 +124,7 @@ func! s:select_placeholder() abort
 
     if empty(@s)
         " jump to next placeholder occurrence (by default at current position)
-        keeppatterns execute 'normal! /' . l:delim . "\<cr>"
+        call search(l:delim, 'cz')
         let l:cpos = getcurpos()
         keeppatterns execute ':s/' . l:delim . '//'
         call setpos('.', l:cpos)

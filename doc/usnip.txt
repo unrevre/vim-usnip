@@ -94,6 +94,13 @@ g:usnip_backrefmarker   |String|        '\\~'
                         should be such that the n-th previous expansion (in
                         order of actual expansion) has the desired content.
 
+-------------------------------------------------------------------------------
+                                                          *g:usnip_startmarker*
+g:usnip_startmarker     |String|        '%##%'
+                        Internal marker for start of expanded template, to be
+                        set to a string that is guaranteed to not be present
+                        in the buffer.
+
 ===============================================================================
 IDIOSYNCRACIES                                           *usnip-idiosyncracies*
 

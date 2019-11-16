@@ -4,6 +4,7 @@ let s:fsdelim = get(g:, 'usnip_fsdelim', '{{-')
 let s:fedelim = get(g:, 'usnip_fedelim', '-}}')
 let s:evalmarker = get(g:, 'usnip_evalmarker', '~')
 let s:backrefmarker = get(g:, 'usnip_backrefmarker', '\\~')
+let s:startmarker = get(g:, 'usnip_startmarker', '%##%')
 
 let s:ndelim = '\V' . s:nsdelim . '\(\.\{-}\)' . s:nedelim
 let s:fdelim = '\V' . s:fsdelim . '\(\.\{-}\)' . s:fedelim
@@ -47,16 +48,14 @@ func! usnip#expand(adjust) abort
             let l:lns[-1] = l:lns[-1] . getreg('s')
             let @s = l:old_s
         endif
+        " insert marker for start of snippet
+        let l:lns[0] = s:startmarker . l:lns[0]
         " insert the snippet
         call append(line('.'), l:lns)
         " join the snippet at the current position
         normal! J
-        " delete extraneous whitespace
-        if l:bc !=# ' '
-            normal! x
-        endif
         " select the first placeholder
-        call s:select_placeholder()
+        call s:select_placeholder(l:bc)
     else
         " Make sure '< mark is set so the normal command won't error out.
         if getpos("'<") == [0, 0, 0, 0]
@@ -74,12 +73,12 @@ func! usnip#expand(adjust) abort
         " restore cursor position
         call setpos('.', l:cpos)
         " jump to the next placeholder
-        call s:select_placeholder()
+        call s:select_placeholder('')
     endif
 endfunc
 
 " this is the function that finds and selects the next placeholder
-func! s:select_placeholder() abort
+func! s:select_placeholder(bc) abort
     " don't clobber s register
     let l:old_s = @s
 
@@ -122,11 +121,18 @@ func! s:select_placeholder() abort
         let @s = eval(@s)
     endif
 
+    " remove extraneous whitespace from joining lines
+    if exists('s:snippetfile')
+        let l:wsc = a:bc !=# ' ' ? ' ' : ''
+        silent keeppatterns execute ':%s/\V' . l:wsc . s:startmarker . '//'
+        " jump to and highlight placeholder
+        silent keeppatterns execute 'normal! /' . l:delim . "/e\<cr>gno\<esc>"
+    endif
+
     if empty(@s)
-        " jump to next placeholder occurrence (by default at current position)
-        call search(l:delim, 'cz')
+        " remove placeholder
         let l:cpos = getcurpos()
-        keeppatterns execute ':s/' . l:delim . '//'
+        normal! gv"_d
         call setpos('.', l:cpos)
     else
         " paste the placeholder's default value in and enter select mode on it
@@ -146,7 +152,7 @@ func! usnip#done(item) abort
         let s:placeholder_texts = []
         let s:placeholder_text = ''
 
-        call s:select_placeholder()
+        call s:select_placeholder('')
     endif
 endfunc
 

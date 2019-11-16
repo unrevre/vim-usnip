@@ -31,7 +31,7 @@ func! usnip#expand(adjust) abort
         let s:placeholder_texts = []
         let s:placeholder_text = ''
         " move to start of snippet token
-        call searchpos('\M' . s:token . '\>', 'bc', line('.'))
+        call searchpos('\V' . s:token . '\>', 'bc', line('.'))
         " check character before token
         let l:bc = col('.') > 1 ? getline('.')[col('.') - 2] : ' '
         " remove snippet token (allows one non-word-character prefix)
@@ -110,7 +110,7 @@ func! s:select_placeholder() abort
     call add(s:placeholder_texts, s:placeholder_text)
 
     " remove the start and end delimiters
-    let @s = substitute(@s, '\V' . l:delim, '\1', '')
+    let @s = substitute(@s, l:delim, '\1', '')
 
     " is this placeholder marked as 'evaluate'?
     if @s =~ '\V\^' . s:evalmarker
@@ -128,9 +128,9 @@ func! s:select_placeholder() abort
 
     if empty(@s)
         " jump to next placeholder occurrence (by default at current position)
-        keeppatterns execute 'normal! /\V' . l:delim . "\<cr>"
+        keeppatterns execute 'normal! /' . l:delim . "\<cr>"
         let l:cpos = getcurpos()
-        keeppatterns execute ':s/\V' . l:delim . '//'
+        keeppatterns execute ':s/' . l:delim . '//'
         call setpos('.', l:cpos)
     else
         " paste the placeholder's default value in and enter select mode on it

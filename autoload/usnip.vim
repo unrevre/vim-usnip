@@ -26,7 +26,7 @@ func! usnip#should_trigger() abort
 endfunc
 
 " main func, called on press of Tab (or whatever key usnip is bound to)
-func! usnip#expand(adjust) abort
+func! usnip#expand(smode) abort
     if exists('s:snippetfile')
         " reset placeholder text history (for backrefs)
         let s:placeholder_texts = []
@@ -64,10 +64,11 @@ func! usnip#expand(adjust) abort
 
         " save cursor position
         let l:cpos = getcurpos()
+        let l:adjust = (a:smode || l:cpos[4] > l:cpos[2]) ? '' : 'h'
         " save the current placeholder's text so we can backref it
         let l:old_s = @s
         " adjust cursor position if activated from insert mode
-        execute 'normal! ' . a:adjust . 'ms"syv`<`s'
+        execute 'normal! ' . l:adjust . 'ms"syv`<`s'
         let s:placeholder_text = @s
         let @s = l:old_s
         " restore cursor position

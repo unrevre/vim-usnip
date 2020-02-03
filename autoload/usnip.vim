@@ -37,9 +37,13 @@ func! usnip#expand(smode) abort
         let l:bc = col('.') > 1 ? getline('.')[col('.') - 2] : ' '
         " remove snippet token (allows one non-word-character prefix)
         normal! "_de
+        let l:lns = readfile(s:snippetfile)
         " adjust the indentation, use the current line as reference
-        let l:ws = matchstr(getline(line('.')), '^\s\+')
-        let l:lns = map(readfile(s:snippetfile), 'empty(v:val)? v:val : l:ws.v:val')
+        if len(l:lns) > 1
+            let l:ws = matchstr(getline(line('.')), '^\s\+')
+            let l:lns[1:-1] = map(l:lns[1:-1],
+                \'empty(v:val) ? v:val : l:ws . v:val')
+        endif
         if strlen(getline('.')) > col('.')
             let l:old_s = @s
             " delete line after snippet token

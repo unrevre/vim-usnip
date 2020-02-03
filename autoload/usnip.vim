@@ -13,10 +13,7 @@ func! usnip#should_trigger() abort
     silent! unlet! s:snippetfile
     let s:token = matchstr(getline('.'), '\v\f+%' . col('.') . 'c>')
 
-    let l:dirs = join(s:directories(), ',')
-    let l:all = globpath(l:dirs, s:token, 0, 1)
-    call filter(l:all, {_, path -> filereadable(path)})
-
+    let l:all = s:paths(s:token)
     if len(l:all) > 0
         let s:snippetfile = l:all[0]
         return 1
@@ -174,11 +171,7 @@ func! usnip#complete(findstart, base) abort
     endif
 
     " Load all snippets that match.
-    let l:dirs = join(s:directories(), ',')
-    let l:all = globpath(l:dirs, a:base, 0, 1)
-    call filter(l:all, {_, path -> filereadable(path)})
-    call map(l:all, funcref('s:build_comp'))
-    call sort(l:all, {a, b -> a.abbr ==? b.abbr ? 0 : a.abbr > b.abbr ? 1 : -1})
+    call map(s:paths(a:base), funcref('s:build_comp'))
 
     return l:all
 endfunc
@@ -198,13 +191,14 @@ func! s:build_comp(_, path) abort
                 \ }
 endfunc
 
-func! s:directories() abort
+func! s:paths(token) abort
     let l:filetypes = split(&filetype, '\.')
-    let l:ret = []
 
+    let l:dirs = []
     for l:dir in get(g:, 'usnip_dirs', ['~/.vim/snippets'])
-        let l:ret += map(l:filetypes, {_, val -> l:dir.'/'.val}) + [l:dir]
+        let l:dirs += map(l:filetypes, {_, val -> l:dir . '/' . val}) + [l:dir]
     endfor
 
-    return l:ret
+    let l:paths = globpath(join(l:dirs, ','), a:token, 0, 1)
+    return filter(l:paths, {_, path -> filereadable(path)})
 endfunc

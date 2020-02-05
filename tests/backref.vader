@@ -1,0 +1,15 @@
+Given python (prop):
+  prop
+
+" exit select mode for backrefs to avoid erroneous handling
+Do (expansion):
+  A\<tab>name\<tab>\<esc>\<tab>property\<tab>end\<esc>
+
+Expect (python: property):
+  @property
+  def name(self):
+      """
+      name: property
+      """
+
+      end

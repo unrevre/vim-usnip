@@ -1,0 +1,39 @@
+Given tex (  abs):
+    abs
+
+Do (forward expansion [0]):
+  A\<tab>1\<tab>end\<esc>
+
+Expect (tex: abs):
+    \abs{1}end
+
+Given tex (  dm):
+    dm
+
+Do (forward expansion [1]):
+  A\<tab>end\<esc>
+
+Expect (tex: display math):
+    \[
+      end
+    \]
+
+Given tex (  {} abs):
+    {} abs
+
+Do (forward expansion [2]):
+  A\<tab>1\<tab>end\<esc>
+
+Expect (tex: abs):
+    {} \abs{1}end
+
+Given tex (  {} dm):
+    {} dm
+
+Do (forward expansion [3]):
+  A\<tab>end\<esc>
+
+Expect (tex: display math):
+    {} \[
+      end
+    \]

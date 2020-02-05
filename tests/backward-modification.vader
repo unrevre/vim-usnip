@@ -1,0 +1,82 @@
+Given tex (asdf .abs):
+  asdf .abs
+
+Do (backward modification [0]):
+  A\<tab>end\<esc>
+
+Expect (tex: abs):
+  \abs{asdf} end
+
+Given tex (asdf hjkl .f):
+  asdf hjkl .f
+
+Do (backward modification [1]):
+  A\<tab>end\<esc>
+
+Expect (tex: frac):
+  \frac{asdf}{hjkl} end
+
+Given tex (asdf*.abs):
+  asdf*.abs
+
+Do (backward modification [2]):
+  A\<tab>end\<esc>
+
+Expect (tex: abs):
+  \abs{asdf*}end
+
+Given tex (asdf hjkl*.f):
+  asdf hjkl*.f
+
+Do (backward modification [3]):
+  A\<tab>end\<esc>
+
+Expect (tex: frac):
+  \frac{asdf}{hjkl*}end
+
+Given tex (asdf .abs hjkl):
+  asdf .abs hjkl
+
+Do (backward modification [4]):
+  2Ea\<tab>end\<esc>
+
+Expect (tex: abs):
+  \abs{asdf} end hjkl
+
+Given tex (asdf hjkl .f qwer):
+  asdf hjkl .f qwer
+
+Do (backward modification [5]):
+  3Ea\<tab>end\<esc>
+
+Expect (tex: frac):
+  \frac{asdf}{hjkl} end qwer
+
+Given tex (asdf*.abs hjkl):
+  asdf*.abs hjkl
+
+Do (backward modification [6]):
+  Ea\<tab>end\<esc>
+
+Expect (tex: abs):
+  \abs{asdf*}end hjkl
+
+Given tex (asdf hjkl*.f qwer):
+  asdf hjkl*.f qwer
+
+Do (backward modification [7]):
+  2Ea\<tab>end\<esc>
+
+Expect (tex: frac):
+  \frac{asdf}{hjkl*}end qwer
+
+Given c (statement;.if):
+  statement;.if
+
+Do (backward modification [8]):
+  A\<tab>\<tab>end\<esc>
+
+Expect (c: if):
+  if (end) {
+      statement;
+  }

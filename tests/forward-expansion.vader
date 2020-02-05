@@ -1,0 +1,86 @@
+Given tex (oo):
+  oo
+
+Do (simple forward expansion [1p]):
+  A\<tab>end\<esc>
+
+Expect (tex: infinity):
+  \infty end
+
+Given tex (abs):
+  abs
+
+Do (simple forward expansion [2p]):
+  A\<tab>1\<tab>end\<esc>
+
+Expect (tex: abs):
+  \abs{1}end
+
+Given tex (dm):
+  dm
+
+Do (simple forward expansion [1p3l]):
+  A\<tab>end\<esc>
+
+Expect (tex: display math):
+  \[
+    end
+  \]
+
+Given tex ({}oo):
+  {}oo
+
+Do (simple forward expansion [1p]):
+  A\<tab>end\<esc>
+
+Expect (tex: infinity):
+  {}\infty end
+
+Given tex ({}abs):
+  {}abs
+
+Do (simple forward expansion [2p]):
+  A\<tab>1\<tab>end\<esc>
+
+Expect (tex: abs):
+  {}\abs{1}end
+
+Given tex ({}dm):
+  {}dm
+
+Do (simple forward expansion [1p3l]):
+  A\<tab>end\<esc>
+
+Expect (tex: display math):
+  {}\[
+    end
+  \]
+
+Given tex ({} oo):
+  {} oo
+
+Do (simple forward expansion [1p]):
+  A\<tab>end\<esc>
+
+Expect (tex: infinity):
+  {} \infty end
+
+Given tex ({} abs):
+  {} abs
+
+Do (simple forward expansion [2p]):
+  A\<tab>1\<tab>end\<esc>
+
+Expect (tex: abs):
+  {} \abs{1}end
+
+Given tex ({} dm):
+  {} dm
+
+Do (simple forward expansion [1p3l]):
+  A\<tab>end\<esc>
+
+Expect (tex: display math):
+  {} \[
+    end
+  \]

@@ -1,0 +1,30 @@
+Given c (guard):
+  guard
+
+Do (expansion):
+  A\<tab>\<esc>\<tab>\<esc>\<tab>\<esc>\<tab>end\<esc>
+
+Expect (c: header guard):
+  #ifndef [VADER-WORKBENCH]
+  #define [VADER-WORKBENCH]
+
+  end
+
+" <esc> drops vim into insert mode with cursor on ']'; subsequent <tab> should
+" not capture the ']' character.
+  #endif /* [VADER-WORKBENCH */
+
+Given python (prop):
+  prop
+
+Do (expansion):
+  A\<tab>name\<tab>\<esc>\<tab>end\<esc>
+
+Expect (python: property):
+  @property
+  def name(self):
+      """ name
+
+      """
+
+      end

@@ -1,0 +1,39 @@
+Given tex (  abs):
+    abs
+
+Do (backward modification [1l->1l]):
+  A\<tab>1\<tab>end\<esc>
+
+Expect (tex: abs):
+    \abs{1}end
+
+Given tex (  dm):
+    dm
+
+Do (simple forward expansion [1p3l]):
+  A\<tab>end\<esc>
+
+Expect (tex: display math):
+    \[
+      end
+    \]
+
+Given tex (  {} abs):
+    {} abs
+
+Do (backward modification [1l->1l]):
+  A\<tab>1\<tab>end\<esc>
+
+Expect (tex: abs):
+    {} \abs{1}end
+
+Given tex (  {} dm):
+    {} dm
+
+Do (simple forward expansion [1p3l]):
+  A\<tab>end\<esc>
+
+Expect (tex: display math):
+    {} \[
+      end
+    \]

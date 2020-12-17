@@ -172,8 +172,6 @@ func! usnip#complete(findstart, base) abort
 
     " Load all snippets that match.
     call map(s:paths(a:base), funcref('s:build_comp'))
-
-    return l:all
 endfunc
 
 func! s:build_comp(_, path) abort

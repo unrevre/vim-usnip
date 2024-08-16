@@ -8,7 +8,7 @@ endif
 let g:loaded_usnip = 1
 
 inoremap <expr> <silent> <Plug>(usnip-next) usnip#should_trigger() ?
-            \"x\<bs>\<c-o>:call usnip#expand(v:false)\<cr>" : "\<tab>"
+            \"\<c-\>\<c-o>:call usnip#expand(v:false)\<cr>" : "\<tab>"
 snoremap <expr> <silent> <Plug>(usnip-next) usnip#should_trigger() ?
             \"\<esc>:call usnip#expand(v:true)\<cr>" : "\<tab>"
 

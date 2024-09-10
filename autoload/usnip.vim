@@ -32,8 +32,12 @@ func! usnip#expand(smode) abort
         call searchpos('\V' . s:token . '\>', 'bc', line('.'))
         " check character before token
         let l:bc = col('.') > 1 ? getline('.')[col('.') - 2] : ' '
-        " remove snippet token (allows one non-word-character prefix)
-        normal! "_de
+        " remove snippet token
+        if len(s:token) > 1
+            normal! "_de
+        else
+            normal! "_diw
+        endif
         let l:lns = readfile(s:snippetfile)
         " adjust the indentation, use the current line as reference
         if len(l:lns) > 1
